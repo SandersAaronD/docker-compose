@@ -1,56 +1,54 @@
-# Scrutiny - (S.M.A.R.T. visualizer)
-docker compose for running **[scrutiny](https://github.com/AnalogJ/scrutiny)**
+# Scrutiny - S.M.A.R.T. Visualizer
 
-![it works](it-works.png)
+Docker Compose configuration for running **[Scrutiny](https://github.com/AnalogJ/scrutiny)**.
 
+![Application Screenshot](it-works.png)
 
-## overview
-scrutiny collects and displays health information from all drives connected to the host.  
-I’m using the **omnibus image** (includes InfluxDB) so it’s just one container.
+## Overview
 
-## reason
-**[smartmontools](www.smartmontools.org)** is spectacular software
-however, taking the time to wade through 
+Scrutiny collects and displays health information from all drives connected to the host system. This configuration utilizes the **omnibus image** (which includes InfluxDB), resulting in a single-container deployment.
+
+## Rationale
+
+**[smartmontools](https.smartmontools.org)** is exceptional software; however, interpreting the output of:
 ```bash
-sudo smartctl -a /dev/<whatever-drive>
+sudo smartctl -a /dev/<device>
 ```
-and actually coming up with a good idea how all of your drives are doing, and more importantly how worried you should be, requires a lot of time
 
-I used to use **[Hard Drive Sentinel](https://www.hdsentinel.com/hard_disk_sentinel_linux.php)** for this purpose, however it hasn't been an active project in years
+and accurately assessing drive health status requires considerable time and expertise.
 
-scrutiny works really well and and I think actually uses backblaze statistics to give you a break down of what the statistical likelihook of one of your drives failing is based on the value of a given attribute, interesting stuff
+Previously, **[Hard Drive Sentinel](https://www.hdsentinel.com/hard_disk_sentinel_linux.php)** served this purpose, but the project has not been actively maintained in recent years.
 
-the problem is `smartctl` requires root priviledges, and therefore creating and using a container without `privileged: true` is sort of a pain
+Scrutiny provides comprehensive analysis and reportedly utilizes Backblaze statistics to calculate the statistical likelihood of drive failure based on specific attribute values.
 
-"but austin you did `cap_add: - SYS_ADMIN` and `- SYS_RAWIO`", which is true, and while that is less than ideal from a security perspective, it is **WAY BETTER** than `privileged: true`. additionally, it is **ALSO WAY BETTER** than having a drive that is screaming at you that it's going to die and not knowing because you don't have time to wade into the minutae of the S.M.A.R.T. data (though if you think S.M.A.R.T. will save you from drive failure/data loss, nope)
+The primary challenge is that `smartctl` requires root privileges, making containerization without `privileged: true` complex. While this configuration uses `cap_add: - SYS_ADMIN` and `- SYS_RAWIO`, which is suboptimal from a security perspective, it is significantly preferable to `privileged: true`. Furthermore, this approach is substantially better than remaining unaware of impending drive failures due to time constraints preventing regular S.M.A.R.T. data analysis. Note that S.M.A.R.T. monitoring does not guarantee prevention of drive failure or data loss.
 
-when you're doing a thing, and it requires effort, a repo is a good idea
-- it will likely save you time in the future
-- and someone else might benefit as well
+## Usage
 
-## usage
-Clone the repo and run:
+Clone the repository and execute:
 ```bash
 docker compose up -d
 ```
 
-Then open http://localhost:8088 (or whatever host port you mapped)
+Access the web interface at http://localhost:8088 (or your configured host port).
 
-## configuration
-- container runs as root to access /dev/nvme* and /dev/sd*.
-- added minimal capabilities (SYS_ADMIN, SYS_RAWIO) so it can read data without being fully privileged.
-- data is stored locally in:
--- ./config → scrutiny config
--- ./influxdb → time-series data
+## Configuration
 
-## notes
-change the host port in the compose file if 8088 is in use.
+- The container runs as root to access `/dev/nvme*` and `/dev/sd*` devices.
+- Minimal capabilities (SYS_ADMIN, SYS_RAWIO) have been added to enable data access without full privileged mode.
+- Data is stored locally in:
+  - `./config` → Scrutiny configuration
+  - `./influxdb` → Time-series data
 
-drives must be visible on the host (smartctl should work locally).
+## Notes
 
-tested on Debian 13 with Docker Compose v2.
+Modify the host port in the compose file if port 8088 is already in use.
 
-this is for personal use / homelab monitoring — no external network exposure.
+Drives must be visible on the host system (smartctl should function locally).
+
+Tested on Debian 13 with Docker Compose v2.
+
+This configuration is intended for personal use and homelab monitoring—not for external network exposure.
 
 ---
 
