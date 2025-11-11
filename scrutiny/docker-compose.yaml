@@ -1,0 +1,24 @@
+services:
+  scrutiny:
+    image: ghcr.io/analogj/scrutiny:master-omnibus
+    container_name: scrutiny
+    ports: ["8088:8080"]
+    user: "0:0"            # run as root inside the container
+    volumes:
+      - /dev:/dev
+      - /run/udev:/run/udev:ro
+      - /sys:/sys:ro
+      - ./config:/opt/scrutiny/config
+      - ./influxdb:/opt/scrutiny/influxdb
+    cap_add:
+      - SYS_ADMIN
+      - SYS_RAWIO
+    security_opt:
+      - seccomp=unconfined
+      - apparmor:unconfined
+    device_cgroup_rules:
+      - 'c 245:* rwm'   
+      - 'b 259:* rwm'  
+      - 'b 8:* rwm'   
+      - 'b 253:* rwm'
+    restart: unless-stopped

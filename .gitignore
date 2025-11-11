@@ -1,0 +1,4 @@
+config
+.history
+influxdb
+logs
