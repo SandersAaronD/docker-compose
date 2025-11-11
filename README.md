@@ -7,3 +7,8 @@ in the unlikely event anyone else ever uses any of this
 - **PAY ATTENTION** many of these compose files will be used in my homelab and for testing
 - They are therefore often **NOT PRODUCTION READY** and should broadly be treated as such.
 
+---
+
+&nbsp;
+
+**466f724a616e6574**

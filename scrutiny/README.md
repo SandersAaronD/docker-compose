@@ -49,3 +49,9 @@ drives must be visible on the host (smartctl should work locally).
 tested on Debian 13 with Docker Compose v2.
 
 this is for personal use / homelab monitoring — no external network exposure.
+
+---
+
+&nbsp;
+
+**466f724a616e6574**
