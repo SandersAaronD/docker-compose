@@ -1,6 +1,8 @@
 # Scrutiny - (S.M.A.R.T. visualizer)
-![it works](it-works.png)
 docker compose for running **[scrutiny](https://github.com/AnalogJ/scrutiny)**
+
+![it works](it-works.png)
+
 
 ## overview
 scrutiny collects and displays health information from all drives connected to the host.  
